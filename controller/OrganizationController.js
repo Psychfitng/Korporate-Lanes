@@ -139,7 +139,7 @@ exports.deleteOrganization = (req, res) => {
   
   try{
 
-    const id = req.query.id;
+    const id = req.query.organizationId;
     Organization.findByIdAndRemove(id).
       then(data => {
         if(!data) {
@@ -173,11 +173,6 @@ exports.removeEmployee = async (req, res) => {
 
    organization.staff_list.splice(organization.staff_list.indexOf(email), 1);
    await organization.save();
-  
-   
-  //  const Employee = await employee.find({ email });
-
-  //  console.log(Employee);
 
    await employee.findOneAndRemove({ email });
 
@@ -224,22 +219,19 @@ exports.getOrganizationByName = async (req, res) => {
 
 //get all organizations
 exports.getAllOrganization = (req, res) => {
-  try{
     Organization.find().
     then(data => {
       res.status(200).json(data);
+    }).catch(err => {
+      res.status(400).json(err.message);
     })
-  }
-  catch(err){
-    res.status(400).json(err.message);
-  }
 };
 
 //get all employees from an organization
 
 exports.getAllEmployesss = async (req, res) => {
   try{
-    const data = await Organization.findById(req.query.id);
+    const data = await Organization.findById(req.query.organization_id);
     res.status(200).json({message: data.staff_list});
   }
   catch(err){

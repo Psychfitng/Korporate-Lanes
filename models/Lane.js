@@ -9,7 +9,12 @@ const laneSchema = new mongoose.Schema({
         required: [true, 'Please enter your lane name'],
         unique: true,
     },
-    chat: [{ userName: String, message: String }],
+    chats:  [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Chat'
+      }
+    ],
     companyId: {
       type: Schema.Types.ObjectId,
       ref: 'organization'
