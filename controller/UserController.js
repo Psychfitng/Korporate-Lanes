@@ -67,7 +67,7 @@ let transporter = nodemailer.createTransport({
       const userName = org.user_name + Math.floor(Math.random()* 10000);
 
       const user = new LaneUser({ 
-        email: req.body.email,
+        email: req.body.employeeEmail,
         password: password,
         name: userName,
         company_name: org.name,
@@ -83,7 +83,7 @@ let transporter = nodemailer.createTransport({
         })
         var mailOptions = {
           from: 'info@irespond.africa',
-          to: req.body.email,
+          to: req.body.employeeEmail,
           subject: 'Welcome onboard',
           text: `Your journey towards wellness starts here pls find your login detail username: ${userName} and your password ${password}`
         };

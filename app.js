@@ -14,7 +14,7 @@ const swaggerOption = {
   swaggerDefinition: (swaggerJSDoc.Options = {
       info: {
           title: "Koporate Lanes-API",
-          description: "API documentation",
+          description: "API documentation for iRespond Koporate",
           contact: {
               name: "Bolaji Adams",
           },

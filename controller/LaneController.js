@@ -25,7 +25,7 @@ let transporter = nodemailer.createTransport({
 
   exports.createLane = async (req, res) => {
 
-    const org = await Organization.findById(req.body.companyId);
+    const org = await Organization.findById(req.query.companyId);
     if(org){
       const lane = new Lane({ 
         name: req.body.name,
@@ -50,7 +50,7 @@ let transporter = nodemailer.createTransport({
   }
 
   exports.updateLane = (req, res) => {
-
+    res.send('I aint ready yet');
   }
 
   // chat feeds
@@ -175,7 +175,7 @@ let transporter = nodemailer.createTransport({
   };
   
   exports.deletePost = async (req, res, next) => {
-    const postId = req.params.chatId;
+    const postId = req.query.chatId;
     try {
       const post = await Chat.findById(postId);
   
