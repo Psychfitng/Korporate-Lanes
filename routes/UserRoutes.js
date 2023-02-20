@@ -24,10 +24,13 @@ router.post('/employee', userController.createUser);
  *              required:
  *                 - employeeEmail
  *                 - companyId
+ *                 - role
  *              properties:
  *                  employeeEmail:
  *                      type: string
  *                  companyId:
+ *                      type: string
+ *                  role:
  *                      type: string
  *      responses:
  *          '200':

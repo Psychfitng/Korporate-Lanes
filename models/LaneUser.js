@@ -12,7 +12,7 @@ const laneUserSchema = new Schema({
   },
   role: {
     type: String,
-    required: [true, "Please enter your laneUser logo"],
+    required: [true, "Please enter role for this employee"],
   },
   email: {
     type: String,

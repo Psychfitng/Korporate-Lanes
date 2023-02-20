@@ -78,7 +78,7 @@ let transporter = nodemailer.createTransport({
         user.save(user).
         then(data => {
           org.staff_list.push(data.email);
-          org.save(org);
+          org.save();
           res.status(201).json({ success: true, message: data })
         })
         var mailOptions = {
@@ -87,7 +87,6 @@ let transporter = nodemailer.createTransport({
           subject: 'Welcome onboard',
           text: `Your journey towards wellness starts here pls find your login detail username: ${userName} and your password ${password}`
         };
-        org.staff_list.push()
         
       transporter.sendMail(mailOptions, function(error, info){
           if (error) {
