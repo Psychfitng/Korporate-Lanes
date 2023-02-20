@@ -58,18 +58,16 @@ router.post('/lane/login', userController.login);
  *            schema:
  *              type: object
  *              required:
- *                 - email
+ *                 - name
  *                 - password
  *              properties:
- *                  email:
+ *                  name:
  *                      type: string
  *                      minLength: 5
  *                      maxLength: 100
  *                      example: info@irespond.africa
  *                  password:
  *                      type: string
- *                      minLength: 8
- *                      maxLength: 45
  *      responses:
  *          '200':
  *              description: Resource found successfully
