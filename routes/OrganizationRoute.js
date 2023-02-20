@@ -49,8 +49,6 @@ router.post('/organization', organizationController.createOrganization);
  *                      maxLength: 45
  *                  organization_logo:
  *                      type: string
- *                      minLength: 1
- *                      maxLength: 45
  *      responses:
  *          '200':
  *              description: Resource added successfully
@@ -63,7 +61,7 @@ router.post('/organization', organizationController.createOrganization);
 router.patch('/organization/update', organizationController.updateOrganization);
 /**
  * @swagger
- * /organization:
+ * /organization/update:
  *   patch:
  *      description: Update Organization data
  *      tags:
@@ -102,8 +100,10 @@ router.patch('/organization/update', organizationController.updateOrganization);
  *                      maxLength: 45
  *                  organization_logo:
  *                      type: string
- *                      minLength: 1
- *                      maxLength: 45
+ *          - in: path
+ *            required:
+ *              - id
+ *            name: id
  *      responses:
  *          '200':
  *              description: Resource added successfully
@@ -154,17 +154,14 @@ router.delete('/delete/organization', organizationController.deleteOrganization)
  * @swagger
  * /delete/organization:
  *   delete:
- *      description: Used to register Oganization/Company
+ *      description: Used to delete Oganization/Company
  *      tags:
  *          - Organization
  *      parameters:
- *          - in: body
- *            name: Organization
- *            description: Delete Organization data
- *            schema:
- *              type: parameter
- *              required:
- *                 - organizationId
+ *          - in: query
+ *            name: organizationId
+ *            required:
+ *              - organizationId
  *      responses:
  *          '200':
  *              description: Resource added successfully
@@ -199,11 +196,9 @@ router.delete('/remove-employee', organizationController.removeEmployee);
  *                      example: info@irespond.africa
  *                  organizationId:
  *                      type: string
- *                      minLength: 1
- *                      maxLength: 45
  *      responses:
  *          '200':
- *              description: Resource added successfully
+ *              description: Resource deleted successfully
  *          '404':
  *              description: resource not found
  *          '400':
@@ -216,19 +211,13 @@ router.get('/organization/employees', organizationController.getAllEmployesss);
  *   get:
  *      description: Get All Organization's Employees
  *      tags:
- *          - Organization Employees
+ *          - Organization
  *      parameters:
  *          - in: query
- *            name: Organization Employees
- *            description: Organization employees
- *            schema:
- *              type: params
- *                 - organization_id
- *              properties:
- *                  organization_logo:
- *                      type: string
- *                      minLength: 1
- *                      maxLength: 45
+ *            name: organization_id
+ *            required:
+ *              - organization_id
+ *            description: List of all employees added by an Organization
  *      responses:
  *          '200':
  *              description: Resource retrieve successfully
@@ -250,9 +239,14 @@ router.patch('/organization/reset-password', organizationController.resetPasswor
  *            schema:
  *              type: object
  *              required:
- *                 - password
+ *                 - new_password
+ *                 - id
  *              properties:
- *                  password:
+ *                  new_password:
+ *                      type: string
+ *                      minLength: 1
+ *                      maxLength: 45
+ *                  id:
  *                      type: string
  *                      minLength: 1
  *                      maxLength: 45
@@ -271,7 +265,7 @@ router.get('/organization/all', organizationController.getAllOrganization);
  *   get:
  *      description: Get All Organizations
  *      tags:
- *          - Organizations
+ *          - Organization
  *      responses:
  *          '200':
  *              description: Resource added successfully
@@ -290,16 +284,7 @@ router.get('/organization/enquiry', organizationController.getOrganization);
  *          - Organization
  *      parameters:
  *          - in: query
- *            name: Organization
- *            description: Organization data
- *            schema:
- *              type: object
- *              required:
- *                 - id
- *              properties:
- *                  id:
- *                      type: string
- *                      example: "6adnhaka79930jkakdnd"
+ *            name: id
  *      responses:
  *          '200':
  *              description: Resource added successfully
@@ -317,19 +302,8 @@ router.get('/organization/name', organizationController.getOrganizationByName);
  *      tags:
  *          - Organization
  *      parameters:
- *          - in: params
- *            name: Organization
- *            description: Find Organization by name
- *            schema:
- *              type: object
- *              required:
- *                 - name
- *              properties:
- *                  name:
- *                      type: string
- *                      minLength: 1
- *                      maxLength: 45
- *                      example: iRespond Africa
+ *          - in: query
+ *            name: name
  *      responses:
  *          '200':
  *              description: Resource added successfully

@@ -243,7 +243,7 @@ exports.resetPassword = async (req, res) => {
   try{
     const data = await Organization.findById(req.body.id);
     data.password = req.body.new_password;
-    data.save(data);
+    await data.save();
     res.status(200).json(data);
   }
   catch(err){
