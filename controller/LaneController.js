@@ -28,7 +28,7 @@ let transporter = nodemailer.createTransport({
     const org = await Organization.findById(req.query.companyId);
     if(org){
       const lane = new Lane({ 
-        name: req.body.name,
+        name: org.name,
         logo: org.organization_logo,
         companyId: org.id,
         chat: []

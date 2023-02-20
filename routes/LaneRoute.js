@@ -9,7 +9,7 @@ router.post('/lane', laneController.createLane);
  * @swagger
  * /lane:
  *   post:
- *      description: Get All Organization's Employees
+ *      description: Lane Creation
  *      tags:
  *          - Lane
  *      parameters:
