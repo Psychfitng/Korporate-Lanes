@@ -170,4 +170,81 @@ router.patch('/chat/update', laneController.updatePost);
  *              description: Bad request
  */
 
+router.delete('/delete/lane', laneController.deleteLane);
+/**
+ * @swagger
+ * /delete/lane:
+ *   delete:
+ *      description: Used to delete Oganization/Company
+ *      tags:
+ *          - Lane
+ *      parameters:
+ *          - in: query
+ *            name: laneId
+ *            required:
+ *              - laneId
+ *      responses:
+ *          '200':
+ *              description: Resource deleted successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+
+router.get('/lane/all', laneController.getAllLanes);
+/**
+ * @swagger
+ * /lane/all:
+ *   get:
+ *      description: Get All Lanes
+ *      tags:
+ *          - Lane
+ *      responses:
+ *          '200':
+ *              description: Resource retrieved successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+router.get('/lane/enquiry', laneController.getLane);
+/**
+ * @swagger
+ * /lane/enquiry:
+ *   get:
+ *      description: Get Lane by Id
+ *      tags:
+ *          - Lane
+ *      parameters:
+ *          - in: query
+ *            name: laneId
+ *      responses:
+ *          '200':
+ *              description: Resource added successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+router.get('/lane/name', laneController.getLaneByName);
+/**
+ * @swagger
+ * /lane/name:
+ *   get:
+ *      description: Get Lane by name
+ *      tags:
+ *          - Lane
+ *      parameters:
+ *          - in: query
+ *            name: laneName
+ *      responses:
+ *          '200':
+ *              description: Resource added successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+
 module.exports = router;

@@ -36,6 +36,10 @@ const organizationSchema = new Schema({
         minlength: [6, 'Minimum password length is 6 characters'],
     },
     lane_link: String,
+    lane: {
+      type: Schema.Types.ObjectId,
+      ref: 'Lane'
+    },
     subscriptionPackage: String,
     start_date: Date,
     end_date: Date,

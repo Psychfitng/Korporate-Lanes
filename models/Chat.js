@@ -5,8 +5,7 @@ const chatSchema = new Schema(
   {
     imageUrl: String,
     content: {
-      type: String,
-      required: true
+      type: String
     },
     creator: {
       type: Schema.Types.ObjectId,
