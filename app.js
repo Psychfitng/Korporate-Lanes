@@ -32,7 +32,9 @@ const swaggerDocs = swaggerJSDoc(swaggerOption);
 //middleware
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use(cors());
+app.use(cors( {
+  origin: ["http://localhost:3000", "https://www.irespond.africa"]
+}));
 
 
 const formatMessage = (room, author, message, time) => {
