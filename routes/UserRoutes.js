@@ -78,4 +78,109 @@ router.post('/lane/login', userController.login);
  */
 
 
+router.get('/employee', userController.getEmployeeByEmail);
+/**
+ * @swagger
+ * /employee:
+ *   get:
+ *      description: Get Employee by email
+ *      tags:
+ *          - Employee
+ *      parameters:
+ *          - in: query
+ *            name: employeeEmail
+ *      responses:
+ *          '200':
+ *              description: Resource added successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+
+router.patch('/employee/update-role', userController.changeEmployeeRole);
+/**
+ * @swagger
+ * /employee/update-role:
+ *   get:
+ *      description: Get Lane by name
+ *      tags:
+ *          - Employee
+ *      parameters:
+ *          - in: body
+ *            name: Employee
+ *            description: Update Role
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - employeEmail
+ *                 - role
+ *              properties:
+ *                  employeeEmail:
+ *                      type: string
+ *                      minLength: 5
+ *                      maxLength: 100
+ *                      example: info@irespond.africa
+ *                  role:
+ *                      type: string
+ *      responses:
+ *          '200':
+ *              description: Resource added successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+
+router.patch('/employee/update-username', userController.changeEmployeeUsername);
+/**
+ * @swagger
+ * /employee/update-username:
+ *   get:
+ *      description: Update Employee Username
+ *      tags:
+ *          - Employee
+ *      parameters:
+ *          - in: query
+ *            name: id
+ *      responses:
+ *          '200':
+ *              description: Resource added successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+
+router.patch('/employee/update-password', userController.changePassword);
+/**
+ * @swagger
+ * /employee/update-password:
+ *   get:
+ *      description: Update Employee Password
+ *      tags:
+ *          - Employee
+ *      parameters:
+ *          - in: body
+ *            name: Employee
+ *            description: Update Password
+ *            schema:
+ *              type: object
+ *              required:
+ *                 - id
+ *                 - password
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                  password:
+ *                      type: string
+ *      responses:
+ *          '200':
+ *              description: Resource updated successfully
+ *          '500':
+ *              description: Internal server error
+ *          '400':
+ *              description: Bad request
+ */
+
 module.exports = router;

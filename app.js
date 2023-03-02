@@ -27,6 +27,8 @@ const swaggerOption = {
   apis: ["app.js", "./routes/*.js"]
 };
 
+let users = [];
+
 const swaggerDocs = swaggerJSDoc(swaggerOption);
 
 //middleware
@@ -62,8 +64,14 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     io.on('connection', (socket) => {
       console.log('Client connected');
       socket.on("disconnect", () =>{
-        io.emit("message",formatMessage('', 'irespond bot', 'someone left the lane', `time: ${Date.now}`) )
-      });
+        io.emit("message",formatMessage('', 'irespond bot', 'someone left the lane', `time: ${Date.now}`) );
+
+        users = users.filter((user) => user.socketID !== socket.id);
+        // console.log(users);
+        //Sends the list of users to the client
+        io.emit('newUserResponse', users);
+        socket.disconnect();
+      });
 
       socket.on("join_room", (data) => {
         // console.log(data)
@@ -88,6 +96,19 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
       socket.on("send_message", (data) => {
         socket.to(data.room).emit("message", data);
       });
+
+      socket.on('message', (data) => {
+        io.emit('messageResponse', data);
+      });
+    
+      socket.on('newUser', (data) => {
+        //Adds the new user to the list of users
+        users.push(data);
+        // console.log(users);
+        //Sends the list of users to the client
+        socket.emit('newUserResponse', users);
+      });
+    
       
     });
   })

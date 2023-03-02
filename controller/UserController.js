@@ -112,3 +112,102 @@ exports.login = async (req, res) => {
     res.status(400).json({ success: false, message: errors });
   }
 };
+
+exports.getEmployeeByEmail = (req, res) => {
+
+  const email = req.query.employeeEmail;
+  if(email){
+    LaneUser.findOne({ email }).then(data => {
+      res.status(200).json({ success: true, message: {email: data.email, role: data.role} });
+    }).catch(err => {
+      res.status(err.status).json({ success: false, message: err.message })
+    })
+  }else{
+    throw new Error('parameter can not be empty')
+  }
+};
+
+exports.changeEmployeeRole = async(req, res) => {
+
+  const filter = { email: req.body.employeeEmail };
+  const update = { role: req.body.role };
+
+  try {
+
+    if(!filter || !update){
+      throw new Error('Email/role cannot be empty');
+    }
+    const employee = await LaneUser.findOneAndUpdate(filter, update, {
+      new: true
+    });
+    res.status(200).json({ success: true, message: employee });
+  } catch (error) {
+    res.status(error.status).json({ success: false, message: error.message});
+  }
+  
+};
+
+exports.changeEmployeeUsername = async(req, res) => {
+
+  const password = Math.random().toString(36).substring(2, 9);
+  
+
+  try {
+
+    const id = req.query.id;
+    if(!id){
+      throw new Error('User does not exist');
+    }
+    let employee = await LaneUser.findById(id);
+
+    const name = employee.company_name;
+
+    const org = await Organization.findOne({ name });
+    
+    employee.name = org.user_name + Math.floor(Math.random() * 10000);
+
+    await employee.save();
+
+
+    var mailOptions = {
+      from: "info@irespond.africa",
+      to: req.body.employeeEmail,
+      subject: "Username Change Request",
+      text: `Your request for new username is approved. Please find your new username: ${employee.name}. "\n" NB: Your username is your unique identifier and it is only known by you except you expose it `,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res.status(200).json({ success: true, message: employee });
+  } catch (error) {
+    res.status(error.status).json({ success: false, message: error.message});
+  }  
+}
+
+exports.changePassword = async(req, res) => {
+
+  const id = req.body.id;
+  const password = req.body.password;
+
+  try {
+
+    if(!filter || !update){
+      throw new Error('Email/password cannot be empty');
+    }
+    let employee = await LaneUser.findById(id);
+
+    employee.password = password;
+
+    await employee.save();
+
+    res.status(200).json({ success: true, message: employee });
+  } catch (error) {
+    res.status(error.status).json({ success: false, message: error.message});
+  }
+  
+};
