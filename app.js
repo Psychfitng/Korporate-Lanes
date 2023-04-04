@@ -1,30 +1,31 @@
-const express = require('express');
-const organizationRoutes = require('./routes/OrganizationRoute')
-const laneRoutes = require('./routes/LaneRoute');
-const userRoutes = require('./routes/UserRoutes');
+const express = require("express");
+const organizationRoutes = require("./routes/OrganizationRoute");
+const laneRoutes = require("./routes/LaneRoute");
+const userRoutes = require("./routes/UserRoutes");
 const app = express();
+const moment = require("moment");
 
 const cors = require("cors");
 
-const { Server } = require('socket.io');
+const { Server } = require("socket.io");
 
-const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const swaggerOption = {
   swaggerDefinition: (swaggerJSDoc.Options = {
-      info: {
-          title: "Koporate Lanes-API",
-          description: "API documentation for iRespond Koporate",
-          contact: {
-              name: "Bolaji Adams",
-          },
-          servers: ["http://localhost:3000/"],
+    info: {
+      title: "Koporate Lanes-API",
+      description: "API documentation for iRespond Koporate",
+      contact: {
+        name: "Bolaji Adams",
       },
+      servers: ["http://localhost:3000/"],
+    },
   }),
-  apis: ["app.js", "./routes/*.js"]
+  apis: ["app.js", "./routes/*.js"],
 };
 
 let users = [];
@@ -34,90 +35,96 @@ const swaggerDocs = swaggerJSDoc(swaggerOption);
 //middleware
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use(cors( {
-  origin: ["http://localhost:3000", "https://www.irespond.africa"]
-}));
-
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://www.irespond.africa"],
+  })
+);
 
 const formatMessage = (room, author, message, time) => {
   return {
     room,
     author,
     message,
-    time,
+    time: moment().format("h:mm a"),
   };
 };
 
 //database connection
 
-const dbURI = 'mongodb+srv://irespond:insidelife@cluster0.rbh1c.mongodb.net/koporate?retryWrites=true&w=majority';
-mongoose.set('strictQuery', true);
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+const dbURI =
+  "mongodb+srv://irespond:insidelife@cluster0.rbh1c.mongodb.net/koporate?retryWrites=true&w=majority";
+mongoose.set("strictQuery", true);
+mongoose
+  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
     const server = app.listen(8080);
     const io = new Server(server, {
       cors: {
         origin: ["http://localhost:3000", "https://www.irespond.africa"],
-        methods: ["GET", "POST"]
-      }
-      });
-    io.on('connection', (socket) => {
-      console.log('Client connected');
-      socket.on("disconnect", () =>{
-        io.emit("message",formatMessage('', 'irespond bot', 'someone left the lane', `time: ${Date.now}`) );
+        methods: ["GET", "POST"],
+      },
+    });
+    io.on("connection", (socket) => {
+      socket.on("join_room", ({ username, room }) => {
+        users[socket.id] = { id: socket.id, username, room };
 
-        users = users.filter((user) => user.socketID !== socket.id);
-        // console.log(users);
-        //Sends the list of users to the client
-        io.emit('newUserResponse', users);
-        socket.disconnect();
-      });
+        io.emit("roomData", Object.values(users));
 
-      socket.on("join_room", (data) => {
-        // console.log(data)
-        socket.join(data.room);
-        // console.log(`User with ID: ${socket.id} joined room ${data}`);
+        socket.join(room);
         socket.emit(
           "join_message",
-          `Hi ${data.user}! Welcome to the ${data.room} lane`
+          `Hi ${username}! Welcome to the ${room} lane`
         );
+
         socket.broadcast
-          .to(data.room)
+          .to(room)
           .emit(
             "message",
             formatMessage(
-              `${data.room}`,
+              `${room}`,
               "irespond bot",
-              `${data.user} has joined ${data.room} lane`
+              `${username} has joined ${room} lane`
             )
           );
       });
-    
+
+      io.emit("roomData", Object.values(users));
+
+      socket.on("disconnect", () => {
+        if (users[socket.id]) {
+          io.emit(
+            "message",
+            formatMessage(
+              ``,
+              "irespond bot",
+              `${users[socket.id]?.username} left the lane`
+            )
+          );
+        }
+
+        delete users[socket.id];
+
+        io.emit("roomData", Object.values(users));
+      });
+
       socket.on("send_message", (data) => {
         socket.to(data.room).emit("message", data);
       });
 
-      socket.on('message', (data) => {
-        io.emit('messageResponse', data);
+      socket.on("send_private_message", (data) => {
+        // get sender information from connectedUsers object
+
+        const sender = users[data.id];
+
+        socket.to(sender.id).emit("message", data);
       });
-    
-      socket.on('newUser', (data) => {
-        //Adds the new user to the list of users
-        users.push(data);
-        // console.log(users);
-        //Sends the list of users to the client
-        socket.emit('newUserResponse', users);
-      });
-    
-      
     });
   })
   .catch((err) => console.log(err));
-
 
 //routes
 
 app.use(organizationRoutes);
 app.use(laneRoutes);
 app.use(userRoutes);
-

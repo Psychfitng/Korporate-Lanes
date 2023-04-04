@@ -82,7 +82,7 @@ exports.createOrganization = (req, res) => {
             from: 'info@irespond.africa',
             to: req.body.email,
             subject: 'Welcome to Haven in Distress',
-            text: 'We are glad to have you join the few that priotize their Employee Wellness. Please follow along as you are about to experience 500% ROI with improve employee productivity and turnover. This are your detail to continue to have a personalized experience '
+            text: 'We are glad to have you join the few that priotize their Employee Wellness. Please follow along as you are about to experience 500% ROI with improve employee productivity and turnover. This are your detail to continue to have a personalized experience. '+ `email: ${req.body.email}, password: ${req.body.password}`
           };
           
         transporter.sendMail(mailOptions, function(error, info){
