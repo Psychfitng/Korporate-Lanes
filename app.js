@@ -3,6 +3,9 @@ const organizationRoutes = require('./routes/OrganizationRoute')
 const laneRoutes = require('./routes/LaneRoute');
 const userRoutes = require('./routes/UserRoutes');
 const app = express();
+const http = require('http');
+const socket = require('./socket');
+const bodyParser = require('body-parser');
 
 const cors = require("cors");
 
@@ -51,73 +54,23 @@ const formatMessage = (room, author, message, time) => {
 //database connection
 
 const dbURI = 'mongodb+srv://irespond:insidelife@cluster0.rbh1c.mongodb.net/koporate?retryWrites=true&w=majority';
+
+// const dbURI = 'mongodb://localhost:27017/korporatelanes'
+
 mongoose.set('strictQuery', true);
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => {
-    const server = app.listen(8080);
-    const io = new Server(server, {
-      cors: {
-        origin: ["http://localhost:3000", "https://www.irespond.africa"],
-        methods: ["GET", "POST"]
-      }
-      });
-    io.on('connection', (socket) => {
-      console.log('Client connected');
-      socket.on("disconnect", () =>{
-        io.emit("message",formatMessage('', 'irespond bot', 'someone left the lane', `time: ${Date.now}`) );
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-        users = users.filter((user) => user.socketID !== socket.id);
-        // console.log(users);
-        //Sends the list of users to the client
-        io.emit('newUserResponse', users);
-        socket.disconnect();
-      });
-
-      socket.on("join_room", (data) => {
-        // console.log(data)
-        socket.join(data.room);
-        // console.log(`User with ID: ${socket.id} joined room ${data}`);
-        socket.emit(
-          "join_message",
-          `Hi ${data.user}! Welcome to the ${data.room} lane`
-        );
-        socket.broadcast
-          .to(data.room)
-          .emit(
-            "message",
-            formatMessage(
-              `${data.room}`,
-              "irespond bot",
-              `${data.user} has joined ${data.room} lane`
-            )
-          );
-      });
-    
-      socket.on("send_message", (data) => {
-        socket.to(data.room).emit("message", data);
-      });
-
-      socket.on('message', (data) => {
-        io.emit('messageResponse', data);
-      });
-    
-      socket.on('newUser', (data) => {
-        //Adds the new user to the list of users
-        users.push(data);
-        // console.log(users);
-        //Sends the list of users to the client
-        socket.emit('newUserResponse', users);
-      });
-    
-      
-    });
-  })
-  .catch((err) => console.log(err));
-
+const server = http.createServer(app);
+socket.init(server)
 
 //routes
 
-app.use(organizationRoutes);
-app.use(laneRoutes);
-app.use(userRoutes);
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.listen(8000, ()=>{
+  console.log("Server is running on port 8080 !!!");
+})
+app.use('/api', organizationRoutes);
+app.use('/api', laneRoutes);
+app.use('/api', userRoutes);
 
