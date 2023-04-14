@@ -1,7 +1,7 @@
-const express = require('express');
-const organizationRoutes = require('./routes/OrganizationRoute')
-const laneRoutes = require('./routes/LaneRoute');
-const userRoutes = require('./routes/UserRoutes');
+const express = require("express");
+const organizationRoutes = require("./routes/OrganizationRoute");
+const laneRoutes = require("./routes/LaneRoute");
+const userRoutes = require("./routes/UserRoutes");
 const app = express();
 const http = require('http');
 const socket = require('./socket');
@@ -9,25 +9,25 @@ const bodyParser = require('body-parser');
 
 const cors = require("cors");
 
-const { Server } = require('socket.io');
+const { Server } = require("socket.io");
 
-const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const swaggerOption = {
   swaggerDefinition: (swaggerJSDoc.Options = {
-      info: {
-          title: "Koporate Lanes-API",
-          description: "API documentation for iRespond Koporate",
-          contact: {
-              name: "Bolaji Adams",
-          },
-          servers: ["http://localhost:3000/"],
+    info: {
+      title: "Koporate Lanes-API",
+      description: "API documentation for iRespond Koporate",
+      contact: {
+        name: "Bolaji Adams",
       },
+      servers: ["http://localhost:3000/"],
+    },
   }),
-  apis: ["app.js", "./routes/*.js"]
+  apis: ["app.js", "./routes/*.js"],
 };
 
 let users = [];
@@ -37,17 +37,18 @@ const swaggerDocs = swaggerJSDoc(swaggerOption);
 //middleware
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use(cors( {
-  origin: ["http://localhost:3000", "https://www.irespond.africa"]
-}));
-
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://www.irespond.africa"],
+  })
+);
 
 const formatMessage = (room, author, message, time) => {
   return {
     room,
     author,
     message,
-    time,
+    time: moment().format("h:mm a"),
   };
 };
 
