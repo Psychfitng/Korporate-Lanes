@@ -36,9 +36,9 @@ exports.createLane = async (req, res) => {
       chat: [],
     });
 
-        lane.save().then(data => {
-        org.lane = data.id;
-        org.save();
+      lane.save().then(data => {
+        // org.lane = data.id;
+        org.update({lane: data.id})
         res.status(201).json({ success: true, message: data });
       }).catch(err => res.status(400).json({ message: err.message }));
    
