@@ -53,8 +53,7 @@ const formatMessage = (room, author, message, time) => {
 
 //database connection
 
-const dbURI =
-  process.env.MONGO_URL;
+const dbURI = process.env.MONGO_URL;
 mongoose.set("strictQuery", true);
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -69,6 +68,11 @@ mongoose
     io.on("connection", (socket) => {
       socket.on("join_room", ({ username, room }) => {
         users[socket.id] = { id: socket.id, username, room };
+
+      });
+
+    });
+  });
 
 // const dbURI = 'mongodb://localhost:27017/korporatelanes'
 
