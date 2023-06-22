@@ -124,7 +124,7 @@ exports.login = async (req, res) => {
   try {
     const user = await Organization.login(email, password);
     const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.cookie('jwt', token, { httpOnly: false, maxAge: maxAge * 1000 });
     res.status(200).json({success: true, message: user});
   } 
   catch (err) {
