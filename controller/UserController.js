@@ -51,8 +51,8 @@ let transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // true for 465, false for other ports
   auth: {
-    user: "info@irespond.africa", // generated ethereal user
-    pass: "Insidelife@1", // generated ethereal password
+    user: process.env.USER_EMAIL, // generated ethereal user
+    pass: process.env.USER_EMAIL_PWD, // generated ethereal password
   },
 });
 

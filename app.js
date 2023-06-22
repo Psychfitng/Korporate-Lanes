@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const organizationRoutes = require("./routes/OrganizationRoute");
 const laneRoutes = require("./routes/LaneRoute");
 const userRoutes = require("./routes/UserRoutes");
@@ -53,7 +54,7 @@ const formatMessage = (room, author, message, time) => {
 //database connection
 
 const dbURI =
-  "mongodb+srv://irespond:insidelife@cluster0.rbh1c.mongodb.net/koporate?retryWrites=true&w=majority";
+  process.env.MONGO_URL;
 mongoose.set("strictQuery", true);
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
